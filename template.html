@@ -1,0 +1,34 @@
+
+<h1>Joueur 1 : </h1>
+<p>
+    Nom : {{ .Player1.Name }}<br>
+    Vie : {{ .Player1.Health }}<br>
+    Attaque : {{ .Player1.Attack }}<br>
+</p>
+<form action="http://localhost:8080/" method="POST">
+    <input name="player" type="hidden" value="superman">
+    <input name="action" type="hidden" value="attack">
+    <input type="submit" value="Attaquer batman">
+</form>
+<form action="http://localhost:8080/" method="POST">
+    <input name="player" type="hidden" value="superman">
+    <input name="action" type="hidden" value="heal">
+    <input type="submit" value="Soigner batman">
+</form>
+<br>
+<h1>Joueur 2 : </h1>
+<p>
+    Nom : {{ .Player2.Name }}<br>
+    Vie : {{ .Player2.Health }}<br>
+    Attaque : {{ .Player2.Attack }}<br>
+</p>
+<form action="http://localhost:8080/" method="POST">
+    <input name="player" type="hidden" value="batman">
+    <input name="player" type="hidden" value="attack">
+    <input type="submit" value="Attaquer superman">
+</form>
+<form action="http://localhost:8080/" method="POST">
+    <input name="player" type="hidden" value="batman">
+    <input name="player" type="hidden" value="heal">
+    <input type="submit" value="Soigner superman">
+</form>
