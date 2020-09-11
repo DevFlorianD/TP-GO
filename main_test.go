@@ -1,16 +1,37 @@
 package main
 
-import "testing"
+import (
+	"testing"
+)
 
-func TestHandler(t *testing.T) {
+func TestHandlerAttack(t *testing.T) {
 	channel := make(chan Player)
+	exitChannel := make(chan bool)
 
-	p1 := Player{"Superman", 2000, 7}
-	p2 := Player{"Batman", 1500, 5}
+	go handleGame(channel, exitChannel)
 
-	handle(&p1, &p2, "attack", channel)
+	playerTest1 := Player{"Superman", 2000, 7}
+	playerTest2 := Player{"Batman", 1500, 5}
 
-	if p2.Health != 1473 {
+	handle(&playerTest1, &playerTest2, "attack", channel)
+
+	if playerTest2.Health != 1493 {
 		t.Errorf("L'attaque de superman sur batman n'a pas fonctionné")
+	}
+}
+
+func TestHandlerHeal(t *testing.T) {
+	channel := make(chan Player)
+	exitChannel := make(chan bool)
+
+	go handleGame(channel, exitChannel)
+
+	playerTest1 := Player{"Superman", 2000, 7}
+	playerTest2 := Player{"Batman", 1500, 5}
+
+	handle(&playerTest1, &playerTest2, "heal", channel)
+
+	if playerTest2.Health != 1507 {
+		t.Errorf("Le soin de superman sur batman n'a pas fonctionné")
 	}
 }

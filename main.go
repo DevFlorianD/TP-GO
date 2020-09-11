@@ -19,7 +19,7 @@ type Data struct {
 	Player2 Player
 }
 
-func handleGame(handleChannel chan Player) {
+func handleGame(handleChannel chan Player, exitChannel chan bool) {
 	for {
 		select {
 		case player := <-handleChannel:
@@ -32,11 +32,13 @@ func handleGame(handleChannel chan Player) {
 					log.Fatalln(err)
 				}
 			}
+		case <-exitChannel:
+			return
 		}
 	}
 }
 
-func generateHandler(handleChan chan Player) func(w http.ResponseWriter, r *http.Request) {
+func generateHandler(handleChan chan Player, exitChannel chan bool) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" {
 			http.Error(w, "404 not found.", http.StatusNotFound)
@@ -71,8 +73,6 @@ func generateHandler(handleChan chan Player) func(w http.ResponseWriter, r *http
 
 			player := r.FormValue("player")
 			action := r.FormValue("action")
-
-			fmt.Println(player, action)
 
 			switch player {
 			case "superman":
@@ -117,11 +117,13 @@ func handleAction(p1 *Player, p2 *Player, action string) {
 
 func main() {
 	var handleChan chan Player
+	var exitChannel chan bool
 	handleChan = make(chan Player)
+	exitChannel = make(chan bool)
 
-	go handleGame(handleChan)
+	go handleGame(handleChan, exitChannel)
 
-	http.HandleFunc("/", generateHandler(handleChan))
+	http.HandleFunc("/", generateHandler(handleChan, exitChannel))
 
 	fmt.Printf("Starting server for testing HTTP POST...\n")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
